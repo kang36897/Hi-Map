@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="28f6194fcb3ddefb600af9ad9121860f" />
+            android:value="77b28a22d87f934258bc7a2a9c62f71e" />
 
         <activity
             android:name="com.gulu.activity.MapHereActivity"

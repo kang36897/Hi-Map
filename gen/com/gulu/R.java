@@ -61,15 +61,17 @@ public final class R {
         public static final int imagebtn_roadsearch_tab_driving=0x7f07000b;
         public static final int imagebtn_roadsearch_tab_transit=0x7f07000a;
         public static final int imagebtn_roadsearch_tab_walk=0x7f07000c;
-        public static final int info_window_btn_detail=0x7f070011;
-        public static final int info_window_title=0x7f070010;
+        public static final int info_window_btn_detail=0x7f070012;
+        public static final int info_window_title=0x7f070011;
         public static final int left_drawer=0x7f07000f;
         public static final int map=0x7f070002;
         public static final int search_pane=0x7f070003;
+        public static final int tip=0x7f070010;
     }
     public static final class layout {
         public static final int activity_map_here=0x7f030000;
-        public static final int info_window_geo=0x7f030001;
+        public static final int drop_down_suggest_tip=0x7f030001;
+        public static final int info_window_geo=0x7f030002;
     }
     public static final class string {
         public static final int app_name=0x7f040000;

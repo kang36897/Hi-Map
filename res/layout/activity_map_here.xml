@@ -56,7 +56,7 @@
                         android:background="@android:color/transparent"
                         android:src="@drawable/btn_nav_drag_down" />
 
-                    <EditText
+                    <AutoCompleteTextView
                         android:id="@+id/autotextview_roadsearch_start"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -64,6 +64,7 @@
                         android:layout_marginLeft="5.0dip"
                         android:layout_toLeftOf="@id/imagebtn_roadsearch_startoption"
                         android:background="@drawable/text_search"
+                        android:completionThreshold="2"
                         android:dropDownVerticalOffset="1.0dip"
                         android:hint="起点:"
                         android:maxLength="20"
@@ -72,7 +73,7 @@
                         android:textColor="#000000"
                         android:textSize="16.0sp" />
 
-                    <EditText
+                    <AutoCompleteTextView
                         android:id="@+id/autotextview_roadsearch_goals"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -80,6 +81,7 @@
                         android:layout_marginLeft="5.0dip"
                         android:layout_toLeftOf="@id/imagebtn_roadsearch_endoption"
                         android:background="@drawable/text_search"
+                        android:completionThreshold="2"
                         android:dropDownVerticalOffset="1.0dip"
                         android:hint="终点:"
                         android:maxLength="20"

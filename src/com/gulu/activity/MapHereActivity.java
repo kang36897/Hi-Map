@@ -25,6 +25,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -55,12 +56,18 @@ import com.amap.api.maps.model.MyTrafficStyle;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
 import com.amap.api.maps.model.VisibleRegion;
+import com.amap.api.services.core.AMapException;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
+import com.amap.api.services.help.Inputtips;
+import com.amap.api.services.help.Inputtips.InputtipsListener;
+import com.amap.api.services.help.Tip;
 import com.gulu.R;
 import com.gulu.adapter.AMapLocationListenerAdapter;
+import com.gulu.adapter.SimpleTextWatcher;
+import com.gulu.adapter.SuggestTipsAdapter;
 import com.gulu.utils.GeocodeSearchHelper;
 import com.gulu.utils.InfoWindowViewHolder;
 import com.gulu.utils.MsgConstants;
@@ -83,7 +90,13 @@ public class MapHereActivity extends Activity implements LocationSource,
 	private Polyline mPolyline;
 	
 	private View mMenuView;
+	
+	private String mCityCode = "shanghai";
 	private View mSearchPaneView;
+	private AutoCompleteTextView mOriginalView;
+	private AutoCompleteTextView mDestinationView;
+	private Tip mOriginalSelectedTip;
+	private Tip mDestinationSelectedTip;
 	
 	private View mInfoWindowPane;
 	
@@ -277,6 +290,97 @@ public class MapHereActivity extends Activity implements LocationSource,
 		mMenuView.setOnClickListener(this);
 		
 		mSearchPaneView = findViewById(R.id.search_pane);
+		mOriginalView = (AutoCompleteTextView) mSearchPaneView
+				.findViewById(R.id.autotextview_roadsearch_start);
+		mDestinationView = (AutoCompleteTextView) mSearchPaneView
+				.findViewById(R.id.autotextview_roadsearch_goals);
+		
+		mOriginalView.addTextChangedListener(new SimpleTextWatcher() {
+			
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				String keyWords = s.toString().trim();
+				if (keyWords == null || keyWords.length() < 2) {
+					return;
+				}
+				
+				Inputtips iTips = new Inputtips(getApplicationContext(),
+						new InputtipsListener() {
+							
+							@Override
+							public void onGetInputtips(List<Tip> inputTips,
+									int rCode) {
+								SuggestTipsAdapter adapter = new SuggestTipsAdapter(
+										getApplicationContext(), inputTips);
+								mOriginalView.setAdapter(adapter);
+								mOriginalView
+										.setOnItemClickListener(new OnItemClickListener() {
+											
+											@Override
+											public void onItemClick(
+													AdapterView<?> parent,
+													View view, int position,
+													long id) {
+												
+												mOriginalSelectedTip = (Tip) parent
+														.getItemAtPosition(position);
+												
+											}
+										});
+								adapter.notifyDataSetChanged();
+							}
+						});
+				
+				try {
+					iTips.requestInputtips(keyWords, mCityCode);
+				} catch (AMapException e) {
+					e.printStackTrace();
+				}
+			};
+		});
+		mDestinationView.addTextChangedListener(new SimpleTextWatcher() {
+			
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				String keyWords = s.toString().trim();
+				if (keyWords == null || keyWords.length() < 2) {
+					return;
+				}
+				
+				Inputtips iTips = new Inputtips(getApplicationContext(),
+						new InputtipsListener() {
+							
+							@Override
+							public void onGetInputtips(List<Tip> inputTips,
+									int rCode) {
+								SuggestTipsAdapter adapter = new SuggestTipsAdapter(
+										getApplicationContext(), inputTips);
+								mDestinationView.setAdapter(adapter);
+								mDestinationView
+										.setOnItemClickListener(new OnItemClickListener() {
+											
+											@Override
+											public void onItemClick(
+													AdapterView<?> parent,
+													View view, int position,
+													long id) {
+												
+												mDestinationSelectedTip = (Tip) parent
+														.getItemAtPosition(position);
+												
+											}
+										});
+								adapter.notifyDataSetChanged();
+							}
+						});
+				
+				try {
+					iTips.requestInputtips(keyWords, mCityCode);
+				} catch (AMapException e) {
+					e.printStackTrace();
+				}
+			};
+		});
 		
 		initDrawerAfterAMap();
 	}
