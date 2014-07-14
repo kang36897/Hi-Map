@@ -1,0 +1,22 @@
+<resources>
+
+    <string name="app_name">Hi,Map</string>
+    <string name="resolving_please_wait">解析中，请稍候...</string>
+    <string name="error_network">搜索失败,请检查网络连接！</string>
+    <string name="error_key">key验证无效！</string>
+    <string name="error_other">未知错误，请稍后重试!错误码为</string>
+    <string name="no_result">对不起，没有搜索到相关数据！</string>
+    <string name="screen_snapshot_failed">截屏失败！</string>
+    <string name="screen_snapshot_succeed">截屏成功！</string>
+    <string name="show_my_location_failed">定位失败，请稍后再试！</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
+    <string-array name="drawer_list">
+        <item>普通地图</item>
+        <item>卫星地图</item>
+        <item>交通状况</item>
+        <item>清洁地图</item>
+    </string-array>
+
+</resources>
