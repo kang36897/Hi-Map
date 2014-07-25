@@ -68,8 +68,10 @@ import com.gulu.R;
 import com.gulu.adapter.AMapLocationListenerAdapter;
 import com.gulu.adapter.SimpleTextWatcher;
 import com.gulu.adapter.SuggestTipsAdapter;
+import com.gulu.overlay.MyLocationOverlay;
 import com.gulu.utils.GeocodeSearchHelper;
 import com.gulu.utils.InfoWindowViewHolder;
+import com.gulu.utils.MapEventDispatcher;
 import com.gulu.utils.MsgConstants;
 import com.gulu.utils.QuestionAndAnswer;
 import com.gulu.utils.TakeSnapshotHelper;
@@ -84,6 +86,7 @@ public class MapHereActivity extends Activity implements LocationSource,
 	
 	private MapView mMapView;
 	private Projection mProjection;
+	private MapEventDispatcher mEDispatcher;
 	private AMap mAMap;
 	
 	private Marker mPickMarker;
@@ -112,7 +115,10 @@ public class MapHereActivity extends Activity implements LocationSource,
 			
 			if (mOnLocationChangedListener != null) {
 				mOnLocationChangedListener.onLocationChanged(location);
-				
+			}
+			
+			if (mLastLocation != null) {
+				mAMap.setMyLocationRotateAngle(mLastLocation.getBearing());
 			}
 		};
 	};
@@ -149,6 +155,7 @@ public class MapHereActivity extends Activity implements LocationSource,
 	}
 	
 	private ViewPropertyAnimator mSearchPaneAnimator;
+	private MyLocationOverlay myLocationOverlay;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +166,8 @@ public class MapHereActivity extends Activity implements LocationSource,
 		mMapView.onCreate(savedInstanceState);
 		
 		initAMap();
-		mAMap.setMyLocationEnabled(true);
+		mAMap.setMyLocationEnabled(false);
+
 		
 		if (mLocManager == null) {
 			mLocManager = LocationManagerProxy.getInstance(this);
@@ -261,6 +269,11 @@ public class MapHereActivity extends Activity implements LocationSource,
 			mAMap.setMyTrafficStyle(myTrafficStyle);
 			
 		}
+
+		mEDispatcher = new MapEventDispatcher();
+		mEDispatcher.associateWith(mAMap);
+		myLocationOverlay = new MyLocationOverlay(this, mEDispatcher);
+		myLocationOverlay.addToMap();
 	}
 	
 	private void initMyLocationOverlay() {
@@ -275,7 +288,7 @@ public class MapHereActivity extends Activity implements LocationSource,
 		mAMap.setMyLocationStyle(myLocationStyle);
 		
 		mAMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
-		mAMap.getUiSettings().setMyLocationButtonEnabled(true);
+		mAMap.getUiSettings().setMyLocationButtonEnabled(false);
 		mAMap.setLocationSource(this);
 	}
 	
@@ -300,7 +313,7 @@ public class MapHereActivity extends Activity implements LocationSource,
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
 				String keyWords = s.toString().trim();
-				if (keyWords == null || keyWords.length() < 2) {
+				if (keyWords == null || keyWords.length() < 1) {
 					return;
 				}
 				
@@ -509,6 +522,9 @@ public class MapHereActivity extends Activity implements LocationSource,
 	protected void onDestroy() {
 		super.onDestroy();
 		mMapView.onDestroy();
+		
+		myLocationOverlay.removeFromMap();
+		mEDispatcher.unassociateWithAMap();
 	}
 	
 	@Override
